@@ -9,13 +9,13 @@ This Python script can be used to display prayer times in the console. The praye
 @license: The MIT License (MIT)
 @requires: python version 2.6.6
 @since: 10.12.2007 (do not change)
-@date: 16.01.2014
-@version: 0.2
 
 """
 
 import urllib
 from sgmllib import SGMLParser
+from colorama import Fore, Back, Style
+from datetime import date
 
 class TBLParser(SGMLParser):
 	def reset(self):
@@ -49,9 +49,23 @@ parser = TBLParser()
 parser.feed(html)
 parser.close()
 
-for row in parser.rows:
-	for col in row:
-		print "%5.5s" % col,
-	print "\n"
 
+for rc, row in enumerate(parser.rows):
+	for col in row:
+		if (rc==1):
+			cstyle=Fore.BLACK+Back.LIGHTWHITE_EX
+		else:
+			if (row[0]==str(date.today().day)):
+				cstyle=Fore.RED
+			else:
+				if (rc%2==0):
+					cstyle=Fore.WHITE
+				else:
+					cstyle=Fore.BLACK
+			if (rc%2==0):
+				cstyle+=Back.LIGHTBLACK_EX
+			else:
+				cstyle+=Back.WHITE
+		print(cstyle+"{0:5.5s}".format(col)),
+	print "\n"
 
